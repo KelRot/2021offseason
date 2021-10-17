@@ -1,0 +1,4 @@
+See file:///C:/Users/nhrde/Desktop/robot/robot%20kod/2021offseason/build/tmp/linkFrcUserProgramReleaseExecutable/output.txt for all output for linkFrcUserProgramReleaseExecutable.
+linking frcUserProgram successful.
+
+Finished linkFrcUserProgramReleaseExecutable, see full log file:///C:/Users/nhrde/Desktop/robot/robot%20kod/2021offseason/build/tmp/linkFrcUserProgramReleaseExecutable/output.txt.

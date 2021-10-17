@@ -1,0 +1,4 @@
+See file:///C:/Users/nhrde/Desktop/robot/robot%20kod/2021offseason/build/tmp/compileFrcUserProgramReleaseExecutableFrcUserProgramCpp/output.txt for all output for compileFrcUserProgramReleaseExecutableFrcUserProgramCpp.
+compiling Robot.cpp successful.
+
+Finished compileFrcUserProgramReleaseExecutableFrcUserProgramCpp, see full log file:///C:/Users/nhrde/Desktop/robot/robot%20kod/2021offseason/build/tmp/compileFrcUserProgramReleaseExecutableFrcUserProgramCpp/output.txt.

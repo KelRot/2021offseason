@@ -46,6 +46,15 @@ class Robot : public frc::TimedRobot {
   
   bool driveReversed=false;
 
+  double startPoint, ang, d, c; //baslangic noktasi, aci, mesafe, son mesafe
+
+  const double donusSuresi = 1.0, gidisSuresi = 4.0;
+  //gidisK olarak degistirilecek
+  int phase = 0;
+  frc::Timer t;
+
+  double dist, angle;
+
  private:
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";

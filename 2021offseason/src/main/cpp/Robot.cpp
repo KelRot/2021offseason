@@ -35,7 +35,7 @@ void Robot::RobotPeriodic() {
 
   
 
-  /*prefs= frc::Preferences::GetInstance();
+  prefs= frc::Preferences::GetInstance();
   enckP= prefs->GetDouble("enckP",0.0);
   enckI= prefs->GetDouble("enckI",0.0);
   enckD= prefs->GetDouble("enckD",0.0);
@@ -50,7 +50,7 @@ void Robot::RobotPeriodic() {
 
   gyropid.kP=gyrokP;
   gyropid.kI=gyrokI;
-  gyropid.kD=gyrokD;*/
+  gyropid.kD=gyrokD;
 
 }
 
@@ -63,10 +63,48 @@ void Robot::AutonomousInit() {
   gyro.Reset();
   driveReversed=false;
 
+    phase = 1;
+    t.Start();
+    startPoint = 0; //shuffleboarddan alinacak
+    ang = atan((305.0 - c) / startPoint);
+    d = sqrt((305.0 - c) * (305.0 - c) + startPoint * startPoint); 
+
 }
 
 void Robot::AutonomousPeriodic() {
-  drive.ArcadeDrive(0,-gyropid.computePID(gyro.GetAngle(),90,5));
+  drive.ArcadeDrive(0,-gyropid.computePID(gyro.GetAngle(),90,5)); //tuning
+
+   /* dist = angle = 0;
+    if(phase == 1){
+        dist = 0;
+        angle = 90.0 - ang;
+        if(t.Get() > donusSuresi || abs(90 - gyro.GetAngle()) < 2){
+            t.Reset();
+            ++phase;
+        }
+    }else if(phase == 2){
+        dist = d;
+        angle = 0;
+        if(t.Get() > gidisSuresi || abs(dist - enc.GetDistance()) < 2){
+            t.Reset();
+            ++phase;
+        }
+    }else if(phase == 3){
+        dist = 0;
+        angle = -(90.0 - ang);
+        if(t.Get() > donusSuresi || abs(- gyro.GetAngle()) < 2){
+            t.Reset();
+            ++phase;
+        }
+    }else if(phase == 4){   
+        dist = c;
+        angle = 0;
+        if(t.Get() > gidisSuresi || abs(dist - enc.GetDistance()) < 2){
+            t.Reset();
+            ++phase;
+        }
+    }
+    drive.ArcadeDrive(encpid.computePID(enc.GetDistance(), dist, 50), -gyropid.computePID(gyro.GetAngle(), angle, 10));*/
 }
 
 void Robot::TeleopInit() {

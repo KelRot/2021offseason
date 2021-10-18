@@ -39,12 +39,13 @@ class Robot : public frc::TimedRobot {
 
   frc::DifferentialDrive drive{sol,sag};
 
-  PIDController pid{0.0,0.0,0.0};
-  PIDController gyropid{0.0,0.0,0.0};
+  PIDController encpid{0.047,0.0,0.0};
+  PIDController gyropid{0.027,0.0,0.24};
 
   VictorSPX tirmanma{2};
   
-  
+  bool driveReversed=false;
+
  private:
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";

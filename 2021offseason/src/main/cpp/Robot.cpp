@@ -12,56 +12,59 @@ double gyrokI;
 double gyrokD;
 
 void Robot::RobotInit() {
-  m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-  m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
+    m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
+    m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
 
-  frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+    frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
-  enc.SetDistancePerPulse((15*3.1415)/1024);
-  gyro.SetYawAxis(frc::ADIS16470_IMU::IMUAxis::kX);
+    enc.SetDistancePerPulse((15*3.1415)/1024);
+    gyro.SetYawAxis(frc::ADIS16470_IMU::IMUAxis::kX);
 
-  frc::CameraServer::GetInstance()->StartAutomaticCapture();
+    frc::CameraServer::GetInstance()->StartAutomaticCapture();
+    frc::CameraServer::GetInstance()->StartAutomaticCapture();
 
-  frc::SmartDashboard::PutBoolean("Drive Reversed",false);
+    frc::SmartDashboard::PutBoolean("Drive Reversed",false);
 
+    frc::SmartDashboard::PutNumber("Starting Point",0.0);
+    startPoint= frc::SmartDashboard::GetNumber("Starting Point",0.0);
 }
 
 
 void Robot::RobotPeriodic() {
-   frc::SmartDashboard::PutNumber("Gyro Angle", gyro.GetAngle());
-   frc::SmartDashboard::PutNumber("Distance", enc.GetDistance());
-   frc::SmartDashboard::PutNumber("enc error", encpid.piderror);
-   std::cout<<gyro.GetAngle()<<std::endl;
+    frc::SmartDashboard::PutNumber("Gyro Angle", gyro.GetAngle());
+    frc::SmartDashboard::PutNumber("Distance", enc.GetDistance());
+    frc::SmartDashboard::PutNumber("enc error", encpid.piderror);
+    std::cout<<gyro.GetAngle()<<std::endl;
 
   
 
-  prefs= frc::Preferences::GetInstance();
-  enckP= prefs->GetDouble("enckP",0.0);
-  enckI= prefs->GetDouble("enckI",0.0);
-  enckD= prefs->GetDouble("enckD",0.0);
+    prefs= frc::Preferences::GetInstance();
+    enckP= prefs->GetDouble("enckP",0.0);
+    enckI= prefs->GetDouble("enckI",0.0);
+    enckD= prefs->GetDouble("enckD",0.0);
 
-  gyrokP= prefs->GetDouble("gyrokP",0.0);
-  gyrokI= prefs->GetDouble("gyrokI",0.0);
-  gyrokD= prefs->GetDouble("gyrokD",0.0);
+    gyrokP= prefs->GetDouble("gyrokP",0.0);
+    gyrokI= prefs->GetDouble("gyrokI",0.0);
+    gyrokD= prefs->GetDouble("gyrokD",0.0);
 
-  encpid.kP=enckP;
-  encpid.kI=enckI;
-  encpid.kD=enckD;
+    encpid.kP=enckP;
+    encpid.kI=enckI;
+    encpid.kD=enckD;
 
-  gyropid.kP=gyrokP;
-  gyropid.kI=gyrokI;
-  gyropid.kD=gyrokD;
+    gyropid.kP=gyrokP;
+    gyropid.kI=gyrokI;
+    gyropid.kD=gyrokD;
 
 }
 
 
 void Robot::AutonomousInit() {
-  m_autoSelected = m_chooser.GetSelected();
+    m_autoSelected = m_chooser.GetSelected();
  
-  std::cout << "Auto selected: " << m_autoSelected << std::endl;
-  enc.Reset();
-  gyro.Reset();
-  driveReversed=false;
+    std::cout << "Auto selected: " << m_autoSelected << std::endl;
+    enc.Reset();
+    gyro.Reset();
+    driveReversed=false;
 
     phase = 1;
     t.Start();
@@ -72,7 +75,7 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-  drive.ArcadeDrive(0,-gyropid.computePID(gyro.GetAngle(),90,5)); //tuning
+    drive.ArcadeDrive(0,-gyropid.computePID(gyro.GetAngle(),90,5)); //tuning
 
    /* dist = angle = 0;
     if(phase == 1){
@@ -108,30 +111,30 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-  enc.Reset();
-  gyro.Reset();
-  driveReversed=false;//Default intake ön
+    enc.Reset();
+    gyro.Reset();
+    driveReversed=false;//Default intake ön
 }
 
 void Robot::TeleopPeriodic() {
-  if(js.GetRawButtonPressed(4)){
-    driveReversed= !driveReversed; //Drive mode switched
-  }
-  if(driveReversed){
-    drive.CurvatureDrive(js.GetRawAxis(1),js.GetRawAxis(4),js.GetRawButton(5));
-    frc::SmartDashboard::PutBoolean("Drive Reversed",driveReversed);
-  }
-  else{
-    drive.CurvatureDrive(-js.GetRawAxis(1),js.GetRawAxis(4),js.GetRawButton(5));
-    frc::SmartDashboard::PutBoolean("Drive Reversed",driveReversed);
-  }
+    if(js.GetRawButtonPressed(4)){
+      driveReversed= !driveReversed; //Drive mode switched
+    }
+    if(driveReversed){
+      drive.CurvatureDrive(js.GetRawAxis(1),js.GetRawAxis(4),js.GetRawButton(5));
+      frc::SmartDashboard::PutBoolean("Drive Reversed",driveReversed);
+    }
+    else{
+      drive.CurvatureDrive(-js.GetRawAxis(1),js.GetRawAxis(4),js.GetRawButton(5));
+      frc::SmartDashboard::PutBoolean("Drive Reversed",driveReversed);
+    }
 
-  if(js.GetRawButton(6)){
-    tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.5);
-  }
-  if(js.GetRawAxis(3)==1){
-    tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.5);
-  }
+    if(js.GetRawButton(6)){
+      tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.5);
+    }
+    if(js.GetRawAxis(3)==1){
+      tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.5);
+    }
 
 }
 

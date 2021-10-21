@@ -58,64 +58,65 @@ void Robot::RobotPeriodic() {
 
 
 void Robot::AutonomousInit() {
-     enc.Reset();
-     gyro.Reset();
-     driveReversed=false;
-     m_autoSelected = m_chooser.GetSelected();
-     m_autoSelected = frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);
-     std::cout << "Auto selected: " << m_autoSelected << std::endl;
+    enc.Reset();
+    gyro.Reset();
+    driveReversed=false;
+    m_autoSelected = m_chooser.GetSelected();
+    m_autoSelected = frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);
+    cout << "Auto selected: " << m_autoSelected << endl;
 
-  if (m_autoSelected == kAutoNameCustom) {
+    if (m_autoSelected == kAutoNameCustom) {
         phase = 1;
-    t.Start();
-    startPoint = 0; //shuffleboarddan alinacak
-    ang = atan((305.0 - c) / startPoint);
-    d = sqrt((305.0 - c) * (305.0 - c) + startPoint * startPoint); 
-  } else {
+        t.Start();
+        startPoint = 0; //shuffleboarddan alinacak
+        ang = atan((305.0 - c) / startPoint);
+        d = sqrt((305.0 - c) * (305.0 - c) + startPoint * startPoint); 
+    }else {
     // Default Auto goes here
-  }
-
-
-
-
+    }
 }
 
 void Robot::AutonomousPeriodic() {
     if (m_autoSelected == kAutoNameCustom) {
-         dist = angle = 0;
-    if(phase == 1){
-        dist = 0;
-        angle = 90.0 - ang;
-        if(t.Get() > donusSuresi || abs(90 - gyro.GetAngle()) < 2){
-            t.Reset();
-            ++phase;
+        dist = angle = 0;
+        if(phase == 1){
+            dist = 0;
+            angle = 90.0 - ang;
+            if(t.Get() > donusSuresi || abs(angle - gyro.GetAngle()) < 2){
+                t.Reset();
+                ++phase;
+            }
+        }else if(phase == 2){
+            dist = d;
+            angle = 0;
+            if(t.Get() > gidisSuresi || abs(dist - enc.GetDistance()) < 2){
+                t.Reset();
+                ++phase;
+            }
+        }else if(phase == 3){
+            dist = 0;
+            angle = -(90.0 - ang);
+            if(t.Get() > donusSuresi || abs(angle - gyro.GetAngle()) < 2){
+                t.Reset();
+                ++phase;
+            }
+        }else if(phase == 4){   
+            dist = c;
+            angle = 0;
+            if(t.Get() > gidisSuresi || abs(dist - enc.GetDistance()) < 2){
+                t.Reset();
+                ++phase;
+            }
+        }else if(phase == 5){
+            if(limitSwitch.Get())
+                kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.5);
+            else
+                kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0);
         }
-    }else if(phase == 2){
-        dist = d;
-        angle = 0;
-        if(t.Get() > gidisSuresi || abs(dist - enc.GetDistance()) < 2){
-            t.Reset();
-            ++phase;
-        }
-    }else if(phase == 3){
-        dist = 0;
-        angle = -(90.0 - ang);
-        if(t.Get() > donusSuresi || abs(- gyro.GetAngle()) < 2){
-            t.Reset();
-            ++phase;
-        }
-    }else if(phase == 4){   
-        dist = c;
-        angle = 0;
-        if(t.Get() > gidisSuresi || abs(dist - enc.GetDistance()) < 2 ){
-            t.Reset();
-            ++phase;
-        }
-    }
-    drive.ArcadeDrive(encpid.computePID(enc.GetDistance(), dist, 50), -gyropid.computePID(gyro.GetAngle(), angle, 10));
+        drive.ArcadeDrive(encpid.computePID(enc.GetDistance(), dist, 50), -gyropid.computePID(gyro.GetAngle(), angle, 10));
     }
     else {
-    drive.ArcadeDrive(0,-gyropid.computePID(gyro.GetAngle(),90,5)); //tuning
+        drive.ArcadeDrive(0,-gyropid.computePID(gyro.GetAngle(),90,5)); //tuning
     }
     
 
@@ -130,23 +131,23 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
     if(js.GetRawButtonPressed(8)){
-      driveReversed= !driveReversed; //Drive mode switched
+        driveReversed= !driveReversed; //Drive mode switched
     }
     if(driveReversed){
-      drive.CurvatureDrive(js.GetRawAxis(1),js.GetRawAxis(4),js.GetRawButton(5));
-      frc::SmartDashboard::PutBoolean("Drive Reversed",driveReversed);
+        drive.CurvatureDrive(js.GetRawAxis(1),js.GetRawAxis(4),js.GetRawButton(5));
+        frc::SmartDashboard::PutBoolean("Drive Reversed",driveReversed);
     }
     else{
-      drive.CurvatureDrive(-js.GetRawAxis(1),js.GetRawAxis(4),js.GetRawButton(5));
-      frc::SmartDashboard::PutBoolean("Drive Reversed",driveReversed);
+        drive.CurvatureDrive(-js.GetRawAxis(1),js.GetRawAxis(4),js.GetRawButton(5));
+        frc::SmartDashboard::PutBoolean("Drive Reversed",driveReversed);
     }
     if(js.GetRawButton(2)){
-      tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.75);
-      tirmanma2.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.75);
+        tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.75);
+        tirmanma2.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.75);
     }
     else if(js.GetRawButton(6)){
-      tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.75);
-      tirmanma2.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.75);
+        tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.75);
+        tirmanma2.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.75);
     }
     else{
         tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);

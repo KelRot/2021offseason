@@ -30,8 +30,8 @@ class Robot : public frc::TimedRobot {
 
         frc::Talon solOn{0};
         frc::Talon solArka{1};
-        frc::Talon sagOn{2};
-        frc::Talon sagArka{3};
+        frc::Talon sagOn{3};
+        frc::Talon sagArka{2};
         frc::Encoder enc{0,1,true};
 
         frc::SpeedControllerGroup sol{solOn,solArka};
@@ -42,7 +42,13 @@ class Robot : public frc::TimedRobot {
         PIDController encpid{0.047,0.0,0.0};
         PIDController gyropid{0.027,0.0,0.24};
 
-        VictorSPX tirmanma{2};
+        VictorSPX tirmanma{0};
+        VictorSPX tirmanma2{3};
+        VictorSPX kapak{2};
+        VictorSPX intex{1};
+
+        //frc::DigitalInput irsensor{2};
+
         
         bool driveReversed=false;
 

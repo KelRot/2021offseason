@@ -3,6 +3,7 @@
 
 frc::Preferences *prefs;
 
+
 double enckP;
 double enckI;
 double enckD;
@@ -36,8 +37,6 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("enc error", encpid.piderror);
     std::cout<<gyro.GetAngle()<<std::endl;
 
-  
-
     prefs= frc::Preferences::GetInstance();
     enckP= prefs->GetDouble("enckP",0.0);
     enckI= prefs->GetDouble("enckI",0.0);
@@ -59,25 +58,31 @@ void Robot::RobotPeriodic() {
 
 
 void Robot::AutonomousInit() {
-    m_autoSelected = m_chooser.GetSelected();
- 
-    std::cout << "Auto selected: " << m_autoSelected << std::endl;
-    enc.Reset();
-    gyro.Reset();
-    driveReversed=false;
+     enc.Reset();
+     gyro.Reset();
+     driveReversed=false;
+     m_autoSelected = m_chooser.GetSelected();
+     m_autoSelected = frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);
+     std::cout << "Auto selected: " << m_autoSelected << std::endl;
 
-    phase = 1;
+  if (m_autoSelected == kAutoNameCustom) {
+        phase = 1;
     t.Start();
     startPoint = 0; //shuffleboarddan alinacak
     ang = atan((305.0 - c) / startPoint);
     d = sqrt((305.0 - c) * (305.0 - c) + startPoint * startPoint); 
+  } else {
+    // Default Auto goes here
+  }
+
+
+
 
 }
 
 void Robot::AutonomousPeriodic() {
-    drive.ArcadeDrive(0,-gyropid.computePID(gyro.GetAngle(),90,5)); //tuning
-
-   /* dist = angle = 0;
+    if (m_autoSelected == kAutoNameCustom) {
+         dist = angle = 0;
     if(phase == 1){
         dist = 0;
         angle = 90.0 - ang;
@@ -102,12 +107,19 @@ void Robot::AutonomousPeriodic() {
     }else if(phase == 4){   
         dist = c;
         angle = 0;
-        if(t.Get() > gidisSuresi || abs(dist - enc.GetDistance()) < 2){
+        if(t.Get() > gidisSuresi || abs(dist - enc.GetDistance()) < 2 ){
             t.Reset();
             ++phase;
         }
     }
-    drive.ArcadeDrive(encpid.computePID(enc.GetDistance(), dist, 50), -gyropid.computePID(gyro.GetAngle(), angle, 10));*/
+    drive.ArcadeDrive(encpid.computePID(enc.GetDistance(), dist, 50), -gyropid.computePID(gyro.GetAngle(), angle, 10));
+    }
+    else {
+    drive.ArcadeDrive(0,-gyropid.computePID(gyro.GetAngle(),90,5)); //tuning
+    }
+    
+
+
 }
 
 void Robot::TeleopInit() {
@@ -117,7 +129,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-    if(js.GetRawButtonPressed(4)){
+    if(js.GetRawButtonPressed(8)){
       driveReversed= !driveReversed; //Drive mode switched
     }
     if(driveReversed){
@@ -128,14 +140,37 @@ void Robot::TeleopPeriodic() {
       drive.CurvatureDrive(-js.GetRawAxis(1),js.GetRawAxis(4),js.GetRawButton(5));
       frc::SmartDashboard::PutBoolean("Drive Reversed",driveReversed);
     }
-
-    if(js.GetRawButton(6)){
-      tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.5);
+    if(js.GetRawButton(2)){
+      tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.75);
+      tirmanma2.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.75);
     }
-    if(js.GetRawAxis(3)==1){
-      tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.5);
+    else if(js.GetRawButton(6)){
+      tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.75);
+      tirmanma2.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.75);
+    }
+    else{
+        tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
+        tirmanma2.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
     }
 
+    if(js.GetRawButton(3)){
+        kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.5);
+    }
+    else if(js.GetRawButton(4)){
+        kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.5);
+    }
+    else{
+        kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
+    }
+
+    if(js.GetRawButton(1)){
+        intex.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -1);
+    }
+    else{
+        intex.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
+    }
+    
+    //frc::SmartDashboard::PutBoolean("kızılötesi", irsensor.Get());
 }
 
 void Robot::DisabledInit() {}

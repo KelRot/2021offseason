@@ -30,9 +30,9 @@ void Robot::RobotPeriodic()
     frc::SmartDashboard::PutNumber("Gyro Angle", gyro.GetAngle());
     frc::SmartDashboard::PutNumber("Distance", enc.GetDistance());
     frc::SmartDashboard::PutNumber("enc error", encpid.piderror);
-    //std::cout<<gyro.GetAngle()<<std::endl;
+    
 
-    prefs = frc::Preferences::GetInstance();
+    /*prefs = frc::Preferences::GetInstance();
     enckP = prefs -> GetDouble("enckP", 0.0);
     enckI = prefs -> GetDouble("enckI", 0.0);
     enckD = prefs -> GetDouble("enckD", 0.0);
@@ -47,7 +47,7 @@ void Robot::RobotPeriodic()
 
     gyropid.kP = gyrokP;
     gyropid.kI = gyrokI;
-    gyropid.kD = gyrokD;
+    gyropid.kD = gyrokD; */
 }
 
 void Robot::AutonomousInit() 
@@ -70,7 +70,7 @@ void Robot::AutonomousInit()
     else 
     {
         // Default Auto goes here
-    }
+    } 
 }
 
 void Robot::AutonomousPeriodic() 
@@ -139,9 +139,11 @@ void Robot::AutonomousPeriodic()
             {
                 kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
             }
-        }*/
-        drive.ArcadeDrive(0, -gyropid.computePID(gyro.GetAngle(), 90, 5)); //tuning
-    }   
+        }
+        
+    */
+    drive.ArcadeDrive( -encpid.computePID(enc.GetDistance(),265,50) , -gyropid.computePID(gyro.GetAngle(), -2 ,10) );
+    }
 }
 
 void Robot::TeleopInit() 
@@ -160,7 +162,7 @@ void Robot::TeleopPeriodic()
     
     if(driveReversed)
     {
-        drive.CurvatureDrive(js.GetRawAxis(1), js.GetRawAxis(4), js.GetRawButton(5)); //Hazne ön
+        drive.CurvatureDrive(js.GetRawAxis(1), js.GetRawAxis(4), js.GetRawButton(5)); //Hazne ön //DIKKAT ET JOYSTICK DEGISTI
         frc::SmartDashboard::PutBoolean("Drive Reversed", driveReversed);            
     }
     else
@@ -189,14 +191,14 @@ void Robot::TeleopPeriodic()
     //-------------------------------------------KAPAK-------------------------------------------
     if(js.GetRawButton(3))
     {
-        kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.5);    //kapak açma 
+        kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.4);    //kapak açma 
     }
     else if(js.GetRawButton(4))
     {
         if(!limitSwitchmin.Get())          
             kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.07);
         else
-            kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.5);   //kapak kapama
+            kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.4);   //kapak kapama
     }
     else
     {
@@ -214,7 +216,7 @@ void Robot::TeleopPeriodic()
     else
         intex.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
 
-    //frc::SmartDashboard::PutBoolean("kızılötesi", irsensor.Get());
+    std::cout<< irSensor.Get()<< std::endl;
 }
 
 void Robot::DisabledInit() {}

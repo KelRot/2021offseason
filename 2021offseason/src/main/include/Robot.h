@@ -4,14 +4,11 @@
 
 #pragma once
 
-#include <string>
 
-#include <frc/TimedRobot.h>
-#include <frc/smartdashboard/SendableChooser.h>
-#include "PIDController.h"
-#include "Include.h"
-#include <ctre/Phoenix.h>
-class Robot : public frc::TimedRobot {
+#include <Include.h>
+
+class Robot : public frc::TimedRobot
+{
     public:
         void RobotInit() override;
         void RobotPeriodic() override;
@@ -32,39 +29,40 @@ class Robot : public frc::TimedRobot {
         frc::Talon solArka{1};
         frc::Talon sagOn{3};
         frc::Talon sagArka{2};
-        frc::Encoder enc{0,1,true};
+        frc::Encoder enc{0, 1, 1};
 
-        frc::SpeedControllerGroup sol{solOn,solArka};
-        frc::SpeedControllerGroup sag{sagOn,sagArka};
+        frc::SpeedControllerGroup sol{solOn, solArka};
+        frc::SpeedControllerGroup sag{sagOn, sagArka};
 
-        frc::DifferentialDrive drive{sol,sag};
+        frc::DifferentialDrive drive{sol, sag};
 
-        PIDController encpid{0.047,0.0,0.0};
-        PIDController gyropid{0.027,0.0,0.24};
+        PIDController encpid{0.047, 0.0, 0.0};
+        PIDController gyropid{0.027, 0.0, 0.24};
 
         VictorSPX tirmanma{0};
         VictorSPX tirmanma2{3};
         VictorSPX kapak{2};
         VictorSPX intex{1};
 
+        frc::DigitalInput limitSwitchmin{4};
+
+        //frc::DigitalInput limitSwitchmax{3};
+    
         //frc::DigitalInput irsensor{2};
 
-        
-        bool driveReversed=false;
+        bool driveReversed = 0;
 
         double startPoint, ang, d, c; //baslangic noktasi, aci, mesafe, son mesafe
 
-        const double donusSuresi = 1.0, gidisSuresi = 4.0;
-        //gidisK olarak degistirilecek
+        const double donusSuresi = 2.0, gidisSuresi = 4.0;
         int phase = 0;
         frc::Timer t;
 
         double dist, angle;
 
     private:
-        frc::SendableChooser<std::string> m_chooser;
-        const std::string kAutoNameDefault = "Default";
-        const std::string kAutoNameCustom = "My Auto";
-        std::string m_autoSelected;
+        frc::SendableChooser<string> m_chooser;
+        const string kAutoNameDefault = "Default";
+        const string kAutoNameCustom = "My Auto";
+        string m_autoSelected;
 };
-

@@ -5,9 +5,15 @@
 #include <frc/Encoder.h>
 #include <frc/Talon.h>
 #include <frc/PIDController.h>
-#include <math.h>
-#include <iostream>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/Preferences.h>
-#include "cameraserver/CameraServer.h"
+#include <cameraserver/CameraServer.h>
+#include <networktables/NetworkTableEntry.h>
+#include <bits/stdc++.h>
+#include <frc/TimedRobot.h>
+#include <frc/smartdashboard/SendableChooser.h>
+#include <ctre/Phoenix.h>
+#include <PIDController.h>
+#include <frc/Timer.h>
+using namespace std;

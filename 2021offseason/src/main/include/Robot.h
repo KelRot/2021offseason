@@ -34,10 +34,10 @@ class Robot : public frc::TimedRobot
         frc::SpeedControllerGroup sol{solOn, solArka};
         frc::SpeedControllerGroup sag{sagOn, sagArka};
 
-        frc::DifferentialDrive drive{sol, sag};
+        frc::DifferentialDrive drive{sol,sag};
 
-        PIDController encpid{0.047, 0.0, 0.0};
-        PIDController gyropid{0.027, 0.0, 0.24};
+        PIDController encpid{0., 0.0, 0.0};
+        PIDController gyropid{0.045, 0.001, 0.23};
 
         VictorSPX tirmanma{0};
         VictorSPX tirmanma2{3};
@@ -48,13 +48,13 @@ class Robot : public frc::TimedRobot
 
         //frc::DigitalInput limitSwitchmax{3};
     
-        //frc::DigitalInput irsensor{2};
+        frc::DigitalInput irSensor{3};
 
         bool driveReversed = 0;
 
         double startPoint, ang, d, c; //baslangic noktasi, aci, mesafe, son mesafe
 
-        const double donusSuresi = 2.0, gidisSuresi = 4.0;
+        const double donusSuresi = 4.0, gidisSuresi = 4.0;
         int phase = 0;
         frc::Timer t;
 

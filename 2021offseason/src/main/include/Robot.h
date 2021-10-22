@@ -36,7 +36,7 @@ class Robot : public frc::TimedRobot
 
         frc::DifferentialDrive drive{sol,sag};
 
-        PIDController encpid{0., 0.0, 0.0};
+        PIDController encpid{0.013 , 0.0005, 0.001};
         PIDController gyropid{0.045, 0.001, 0.23};
 
         VictorSPX tirmanma{0};

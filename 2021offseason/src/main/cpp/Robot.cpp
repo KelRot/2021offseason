@@ -36,15 +36,12 @@ void Robot::RobotPeriodic()
     enckP = prefs -> GetDouble("enckP", 0.0);
     enckI = prefs -> GetDouble("enckI", 0.0);
     enckD = prefs -> GetDouble("enckD", 0.0);
-
     gyrokP = prefs -> GetDouble("gyrokP", 0.0);
     gyrokI = prefs -> GetDouble("gyrokI", 0.0);
     gyrokD = prefs -> GetDouble("gyrokD", 0.0);
-
     encpid.kP = enckP;
     encpid.kI = enckI;
     encpid.kD = enckD;
-
     gyropid.kP = gyrokP;
     gyropid.kI = gyrokI;
     gyropid.kD = gyrokD; */
@@ -58,11 +55,11 @@ void Robot::AutonomousInit()
     m_autoSelected = m_chooser.GetSelected();
     m_autoSelected = frc::SmartDashboard::GetString("Auto Selector", kAutoNameDefault);
     cout << "Auto selected: " << m_autoSelected << endl;
+    phase = 1;
+    t.Start();
 
     if (m_autoSelected == kAutoNameCustom) 
     {
-        phase = 1;
-        t.Start();
         startPoint = 0; //shuffleboarddan alinacak
         ang = atan((305.0 - c) / startPoint);
         d = sqrt((305.0 - c) * (305.0 - c) + startPoint * startPoint); 
@@ -91,7 +88,7 @@ void Robot::AutonomousPeriodic()
         {
             dist = d;
             angle = 0;
-            if(t.Get() > gidisSuresi || abs(dist - enc.GetDistance()) < 2 || encpid.errord==0)
+            if(t.Get() > gidisSuresi || abs(dist - enc.GetDistance()) < 2 || encpid.errord == 0)
             {
                 t.Reset();
                 ++phase;
@@ -124,27 +121,23 @@ void Robot::AutonomousPeriodic()
     }
     else
     {
-        /*if(phase == 1)
+        if(phase == 1)
         {
-            drive.ArcadeDrive(-encpid.computePID(-enc.GetDistance(), 300, 50), -gyropid.computePID(gyro.GetAngle(), 0, 10));
-            if(t.Get() > 6 && abs(300 - enc.GetDistance()) < 3 && abs(encpid.errord)<1 && !irSensor.Get())
+            drive.ArcadeDrive(-encpid.computePID(-enc.GetDistance(), 290, 10), -gyropid.computePID(gyro.GetAngle(), 0, 10));
+            if(t.Get() > 5 && abs(290 + enc.GetDistance()) < 5 && abs(encpid.errord)<1)
             {
                 t.Reset();
-                ++phase;
+                phase++;
             }
         }
         else if(phase == 2)
         {
-            kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.5);
-            if(t.Get() > 1)
+            kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.2);
+            if(t.Get() > 0.35)
             {
                 kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
             }
-        }
-        
-    */
-    drive.ArcadeDrive( -encpid.computePID(-enc.GetDistance(),50,10) , -gyropid.computePID(gyro.GetAngle(), -0 ,10) );
-
+        } 
     }
 }
 
@@ -160,7 +153,7 @@ void Robot::TeleopPeriodic()
     //-------------------------------------------DRIVE-------------------------------------------
 
     if(js.GetRawButtonPressed(8))
-        driveReversed ^= 1; //Drive mode switched
+        driveReversed = !driveReversed; //Drive mode switched
     
     if(driveReversed)
     {

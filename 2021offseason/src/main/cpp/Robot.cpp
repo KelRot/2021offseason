@@ -126,23 +126,25 @@ void Robot::AutonomousPeriodic()
     {
         /*if(phase == 1)
         {
-            drive.ArcadeDrive(encpid.computePID(enc.GetDistance(), 305, 50), gyropid.computePID(gyro.GetAngle(), 0, 10));
-            if(t.Get() > 5 || abs(305 - enc.GetDistance()) < 2)
+            drive.ArcadeDrive(-encpid.computePID(-enc.GetDistance(), 300, 50), -gyropid.computePID(gyro.GetAngle(), 0, 10));
+            if(t.Get() > 6 && abs(300 - enc.GetDistance()) < 3 && abs(encpid.errord)<1 && !irSensor.Get())
             {
+                t.Reset();
                 ++phase;
             }
         }
         else if(phase == 2)
         {
             kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.5);
-            if(t.Get() < 1)
+            if(t.Get() > 1)
             {
                 kapak.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.0);
             }
         }
         
     */
-    drive.ArcadeDrive( -encpid.computePID(enc.GetDistance(),265,50) , -gyropid.computePID(gyro.GetAngle(), -2 ,10) );
+    drive.ArcadeDrive( -encpid.computePID(-enc.GetDistance(),50,10) , -gyropid.computePID(gyro.GetAngle(), -0 ,10) );
+
     }
 }
 

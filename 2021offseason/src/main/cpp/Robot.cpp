@@ -123,8 +123,8 @@ void Robot::AutonomousPeriodic()
     {
         if(phase == 1)
         {
-            drive.ArcadeDrive(-encpid.computePID(-enc.GetDistance(), 290, 10), -gyropid.computePID(gyro.GetAngle(), 0, 10));
-            if(t.Get() > 5 && abs(290 + enc.GetDistance()) < 5 && abs(encpid.errord)<1)
+            drive.ArcadeDrive(-encpid.computePID(-enc.GetDistance(), 280, 10), -gyropid.computePID(gyro.GetAngle(), 0, 10));
+            if(t.Get() > 5 || abs(280 + enc.GetDistance()) < 5 || abs(encpid.errord)<1 || !irSensor.Get())
             {
                 t.Reset();
                 phase++;
@@ -167,12 +167,12 @@ void Robot::TeleopPeriodic()
     }
 
     //-------------------------------------------TIRMANMA-------------------------------------------
-    if(js.GetRawButton(2))
+    if(jstirmanma.GetRawButton(2))
     {
         tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.75); //tırmanma yukarı
         tirmanma2.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, -0.75);
     }
-    else if(js.GetRawButton(6))
+    else if(jstirmanma.GetRawButton(6))
     {
         tirmanma.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.75); //tırmanma aşağı
         tirmanma2.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0.75);

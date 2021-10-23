@@ -22,6 +22,7 @@ class Robot : public frc::TimedRobot
         void TestPeriodic() override;
 
         frc::Joystick js{0};
+        frc::Joystick jstirmanma{1};
 
         frc::ADIS16470_IMU gyro{};
 
